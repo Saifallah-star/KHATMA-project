@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ختمات القرآن الكريم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Scheherazade+New:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g0:#0d2b1a;--g1:#1b4332;--g2:#2d6a4f;--g3:#52b788;--g4:#95d5b2;--g5:#d8f3dc;--g6:#f0faf3;
+  --gold:#b5872a;--gold2:#d4a244;--gold3:#f0c060;--gold4:#fdf0d5;--gold5:#fffbf0;
+  --cream:#faf7ef;--cream2:#f0ead8;--cream3:#e8dfc8;
+  --txt0:#0d1f16;--txt1:#1e3a28;--txt2:#3d5a47;--txt3:#7a9080;
+  --red:#a83228;--red2:#e8c4c0;
+  --sh1:0 2px 12px rgba(13,43,26,.10);--sh2:0 6px 30px rgba(13,43,26,.16);--sh3:0 12px 50px rgba(13,43,26,.22);
+  --r:14px;--rl:22px;
+}
+html,body{direction:rtl;font-family:'Scheherazade New',serif;background:var(--cream);color:var(--txt0);min-height:100vh}
+.app-wrap{min-height:100vh;position:relative;background:var(--cream);overflow-x:hidden}
+.app-wrap::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(82,183,136,.07) 0%,transparent 70%),
+  radial-gradient(ellipse 50% 50% at 85% 80%,rgba(181,135,42,.07) 0%,transparent 70%),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='%23b5872a' fill-opacity='.028'%3E%3Cpolygon points='60,0 72,48 120,60 72,72 60,120 48,72 0,60 48,48'/%3E%3C/g%3E%3C/svg%3E");}
+.header{position:relative;background:linear-gradient(165deg,var(--g0) 0%,var(--g1) 45%,var(--g2) 100%);overflow:hidden;box-shadow:var(--sh3)}
+.header-geo{position:absolute;inset:0;opacity:.06;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='%23ffffff'%3E%3Cpolygon points='40,4 76,20 76,60 40,76 4,60 4,20'/%3E%3Cpolygon points='40,12 68,24 68,56 40,68 12,56 12,24'/%3E%3Cpolygon points='40,20 60,28 60,52 40,60 20,52 20,28'/%3E%3C/g%3E%3C/svg%3E")}
+.header-inner{position:relative;z-index:1;padding:40px 24px 32px;text-align:center}
+.header-basmala{font-family:'Amiri',serif;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--gold3);text-shadow:0 1px 12px rgba(0,0,0,.4);letter-spacing:.04em;margin-bottom:10px}
+.header-title{font-family:'Amiri',serif;font-size:clamp(2rem,5vw,3.4rem);font-weight:700;color:#fff;text-shadow:0 3px 20px rgba(0,0,0,.35);line-height:1.15;margin-bottom:6px}
+.header-sub{font-size:clamp(.9rem,2vw,1.1rem);color:rgba(255,255,255,.6)}
+.gold-bar{height:4px;background:linear-gradient(90deg,transparent 0%,var(--gold) 20%,var(--gold3) 50%,var(--gold) 80%,transparent 100%);margin-top:24px}
+.header-ornament{margin:8px 0 0;font-size:1.1rem;color:var(--gold2);letter-spacing:10px;opacity:.7}
+.tab-bar{position:sticky;top:0;z-index:200;background:rgba(250,247,239,.96);backdrop-filter:blur(12px);border-bottom:2px solid var(--cream3);box-shadow:0 4px 20px rgba(13,43,26,.08)}
+.tab-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:6px;padding:10px 16px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--cream3) transparent}
+.tab-btn{flex-shrink:0;padding:8px 18px;border-radius:100px;border:1.5px solid var(--cream3);background:transparent;color:var(--txt2);font-family:'Scheherazade New',serif;font-size:.95rem;font-weight:500;cursor:pointer;transition:all .22s;white-space:nowrap}
+.tab-btn:hover{border-color:var(--g3);color:var(--g2);background:var(--g6)}
+.tab-btn.active{background:var(--g1);color:#fff;border-color:var(--g1);box-shadow:0 3px 12px rgba(27,67,50,.35);font-weight:600}
+.tab-btn.done{border-color:var(--gold2);color:var(--gold)}
+.main{max-width:1100px;margin:0 auto;padding:28px 16px 40px;position:relative;z-index:1}
+.khatma-card{background:#fff;border-radius:var(--rl);padding:26px;margin-bottom:22px;box-shadow:var(--sh1);border:1.5px solid rgba(181,135,42,.2);position:relative;overflow:hidden}
+.khatma-card::after{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--g2),var(--g3),var(--gold2))}
+.khatma-title{font-family:'Amiri',serif;font-size:1.7rem;font-weight:700;color:var(--g1);margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.khatma-meta{font-size:.85rem;color:var(--txt3);margin-bottom:18px}
+.prog-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.prog-lbl{font-size:.9rem;color:var(--txt2)}
+.prog-pct{font-family:'Amiri',serif;font-size:1.4rem;font-weight:700;color:var(--g2)}
+.prog-track{height:14px;background:var(--cream2);border-radius:100px;overflow:hidden;position:relative}
+.prog-fill-rs{position:absolute;top:0;right:0;height:100%;background:linear-gradient(90deg,var(--g4),var(--g3));border-radius:100px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.prog-fill-cp{position:absolute;top:0;right:0;height:100%;background:linear-gradient(90deg,var(--gold3),var(--gold));border-radius:100px;transition:width .7s cubic-bezier(.4,0,.2,1);z-index:1}
+.prog-stats{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+.prog-stat{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--txt2)}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dot.av{background:var(--cream3);border:1.5px solid var(--txt3)}.dot.rs{background:var(--g3)}.dot.cp{background:var(--gold)}
+.complete-banner{background:linear-gradient(135deg,var(--gold5),var(--gold4));border:2px solid var(--gold3);border-radius:var(--r);padding:18px 22px;text-align:center;margin-bottom:18px}
+.complete-banner h3{font-family:'Amiri',serif;font-size:1.3rem;color:var(--gold);margin-bottom:4px}
+.complete-banner p{font-size:.9rem;color:var(--txt2)}
+.controls{display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.inp-wrap{flex:1;min-width:200px;position:relative;display:flex;align-items:center}
+.inp-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:1rem;color:var(--txt3);pointer-events:none;z-index:1}
+.inp{width:100%;padding:13px 42px 13px 16px;border:1.5px solid var(--cream3);border-radius:var(--r);font-family:'Scheherazade New',serif;font-size:1rem;color:var(--txt0);background:#fff;outline:none;transition:border-color .2s,box-shadow .2s;direction:rtl}
+.inp:focus{border-color:var(--g3);box-shadow:0 0 0 4px rgba(82,183,136,.12)}
+.inp::placeholder{color:var(--txt3)}
+.srch-result{background:#fff;border-radius:var(--r);padding:12px 16px;margin-bottom:18px;border:1.5px solid var(--cream3);font-size:.9rem;color:var(--txt2);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.srch-badge{padding:3px 12px;background:var(--gold4);color:var(--gold);border-radius:100px;font-size:.82rem;font-weight:600;border:1px solid var(--gold3)}
+.srch-none{color:var(--red)}
+.juz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:11px}
+.juz-card{background:#fff;border-radius:var(--r);padding:16px 12px;box-shadow:var(--sh1);border:2px solid transparent;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;text-align:center;min-height:118px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;user-select:none}
+.juz-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.juz-card.available::before{background:linear-gradient(90deg,var(--g4),var(--g5))}
+.juz-card.reserved::before{background:linear-gradient(90deg,var(--g3),var(--g2))}
+.juz-card.completed::before{background:linear-gradient(90deg,var(--gold3),var(--gold))}
+.juz-card.available{border-color:var(--cream2)}
+.juz-card.available:hover{border-color:var(--g3);box-shadow:var(--sh2);transform:translateY(-3px) scale(1.01)}
+.juz-card.reserved{border-color:rgba(82,183,136,.35);background:linear-gradient(160deg,#fff,var(--g6))}
+.juz-card.reserved:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
+.juz-card.completed{border-color:rgba(181,135,42,.3);background:linear-gradient(160deg,#fff,var(--gold5))}
+.juz-card.completed:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
+.juz-card.hl{box-shadow:0 0 0 3px var(--gold3),var(--sh2) !important;animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px var(--gold3)}50%{box-shadow:0 0 0 7px rgba(212,162,68,.25)}}
+.juz-badge{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Amiri',serif;font-size:1.1rem;font-weight:700;flex-shrink:0;transition:all .25s}
+.available .juz-badge{background:var(--g5);color:var(--g1);border:2px solid var(--g4)}
+.reserved .juz-badge{background:var(--g2);color:#fff;border:2px solid var(--g1);box-shadow:0 4px 12px rgba(45,106,79,.3)}
+.completed .juz-badge{background:var(--gold);color:#fff;border:2px solid var(--gold2);box-shadow:0 4px 12px rgba(181,135,42,.35)}
+.juz-card:hover .juz-badge{transform:scale(1.08)}
+.juz-num-lbl{font-size:.75rem;color:var(--txt3)}
+.juz-by{font-size:.82rem;color:var(--g1);font-weight:700;font-family:'Amiri',serif;max-width:118px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.juz-status{font-size:.75rem;display:flex;align-items:center;gap:3px;font-weight:600}
+.available .juz-status{color:var(--g2)}.reserved .juz-status{color:var(--g1)}.completed .juz-status{color:var(--gold)}
+.overlay{position:fixed;inset:0;background:rgba(5,15,10,.65);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:500;padding:16px;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal{background:#fff;border-radius:var(--rl);padding:36px 28px;max-width:420px;width:100%;box-shadow:var(--sh3);border:1.5px solid rgba(181,135,42,.25);animation:slideUp .28s cubic-bezier(.4,0,.2,1);direction:rtl;text-align:center;position:relative;overflow:hidden}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--g2),var(--gold2))}
+.modal-ico{font-size:2.8rem;margin-bottom:10px;display:block}
+.modal-title{font-family:'Amiri',serif;font-size:1.5rem;font-weight:700;color:var(--g1);margin-bottom:14px}
+.modal-sub{font-size:.9rem;color:var(--txt3);margin-bottom:20px}
+.modal-inp{width:100%;padding:14px 16px;border:1.5px solid var(--cream3);border-radius:var(--r);font-family:'Scheherazade New',serif;font-size:1.1rem;background:var(--cream);color:var(--txt0);outline:none;transition:border-color .2s,box-shadow .2s;direction:rtl;text-align:center;margin-bottom:18px}
+.modal-inp:focus{border-color:var(--g3);box-shadow:0 0 0 4px rgba(82,183,136,.12)}
+.modal-inp::placeholder{color:var(--txt3)}
+.modal-info{padding:14px 16px;background:var(--cream);border-radius:var(--r);border:1.5px solid var(--cream3);margin-bottom:20px;text-align:right}
+.modal-info-lbl{font-size:.78rem;color:var(--txt3);margin-bottom:3px}
+.modal-info-name{font-family:'Amiri',serif;font-size:1.4rem;color:var(--g1);font-weight:700}
+.modal-info-date{font-size:.75rem;color:var(--txt3);margin-top:3px}
+.modal-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{padding:12px 22px;border-radius:var(--r);border:none;font-family:'Scheherazade New',serif;font-size:1rem;font-weight:600;cursor:pointer;transition:all .22s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,var(--g2),var(--g1));color:#fff;box-shadow:0 4px 14px rgba(27,67,50,.3)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(27,67,50,.4)}
+.btn-primary:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#fff;box-shadow:0 4px 14px rgba(181,135,42,.3)}
+.btn-gold:hover{transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--txt2);border:1.5px solid var(--cream3)}
+.btn-outline:hover{border-color:var(--g3);color:var(--g2);background:var(--g6)}
+.btn-ghost{background:transparent;color:var(--red);border:1.5px solid rgba(168,50,40,.2);font-size:.9rem;padding:9px 16px}
+.btn-ghost:hover{background:var(--red2);border-color:var(--red)}
+.btn-sm{padding:8px 14px;font-size:.85rem;border-radius:10px}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);padding:13px 26px;border-radius:100px;font-family:'Scheherazade New',serif;font-size:.95rem;font-weight:600;box-shadow:var(--sh3);z-index:9000;display:flex;align-items:center;gap:8px;animation:slideUp .3s ease;max-width:90vw;text-align:center}
+.toast.success{background:var(--g1);color:#fff}
+.toast.error{background:var(--red);color:#fff}
+.toast.gold{background:linear-gradient(135deg,var(--gold),#8a6010);color:#fff}
+.footer{text-align:center;padding:28px 16px;color:var(--txt3);font-size:.82rem;direction:rtl;position:relative;z-index:1}
+.footer-orn{font-size:1rem;color:var(--gold2);letter-spacing:12px;margin-bottom:6px;opacity:.6}
+.loading{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;font-family:'Amiri',serif;color:var(--g1);font-size:1.5rem;direction:rtl;background:var(--cream)}
+.spinner{width:50px;height:50px;border:3px solid var(--g5);border-top-color:var(--g2);border-radius:50%;animation:spin .85s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* Admin panel */
+.admin-panel{background:#fff;border-radius:var(--rl);padding:26px;margin-top:26px;border:2px solid var(--gold4);box-shadow:var(--sh1)}
+.admin-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid var(--cream2)}
+.admin-title{font-family:'Amiri',serif;font-size:1.3rem;font-weight:700;color:var(--g1)}
+.admin-row{border:1.5px solid var(--cream2);border-radius:var(--r);padding:16px;margin-bottom:14px;transition:background .2s}
+.admin-row:hover{background:var(--g6)}
+.admin-row-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.admin-row-name{font-family:'Amiri',serif;font-size:1.1rem;font-weight:700;color:var(--g1)}
+.admin-row-meta{font-size:.82rem;color:var(--txt3);margin-bottom:8px}
+.admin-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:10px}
+.tbl th{background:var(--cream);padding:9px 11px;text-align:right;font-weight:600;color:var(--txt2);border-bottom:2px solid var(--cream2)}
+.tbl td{padding:9px 11px;border-bottom:1px solid var(--cream2);vertical-align:middle}
+.tbl tr:hover td{background:var(--cream)}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:100px;font-size:.78rem;font-weight:600}
+.badge.rs{background:var(--g5);color:var(--g1)}.badge.cp{background:var(--gold4);color:var(--gold)}
+.tab-add{flex-shrink:0;padding:8px 16px;border-radius:100px;border:1.5px dashed var(--g3);background:transparent;color:var(--g2);font-family:'Scheherazade New',serif;font-size:.9rem;cursor:pointer;transition:all .22s;display:flex;align-items:center;gap:4px}
+.tab-add:hover{background:var(--g6);border-color:var(--g2)}
+.tab-admin{flex-shrink:0;margin-right:auto;padding:8px 14px;border-radius:100px;border:1.5px solid var(--gold4);background:var(--gold5);color:var(--gold);font-family:'Scheherazade New',serif;font-size:.85rem;cursor:pointer;transition:all .22s}
+.tab-admin:hover{background:var(--gold4);border-color:var(--gold2)}
+@media(max-width:640px){
+  .juz-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+  .juz-card{min-height:105px;padding:10px 7px;gap:5px}
+  .juz-badge{width:36px;height:36px;font-size:.9rem}
+  .controls{flex-direction:column}
+  .modal{padding:26px 16px}
+  .header-inner{padding:26px 16px 22px}
+}
+@media(max-width:380px){.juz-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const FIREBASE_CONFIG = {
+  "apiKey": "AIzaSyB1Ig8Uw9R6DhKBI8YPhAnUm-kKrA9MrX4",
+  "authDomain": "khatma-c6496.firebaseapp.com",
+  "databaseURL": "https://khatma-c6496-default-rtdb.firebaseio.com",
+  "projectId": "khatma-c6496",
+  "storageBucket": "khatma-c6496.firebasestorage.app",
+  "messagingSenderId": "317219087641",
+  "appId": "1:317219087641:web:f0b8823a3ccbf7e40f9188"
+};
+</script>
+<script type="text/babel">
+const { useState, useEffect, useCallback, useRef } = React;
+
+const JUZ_NAMES  = ["الم","سَيقول","تِلكَ الرُّسُل","لَن تَنالُوا","والمُحصَنات","لا يُحِبُّ الله","وإذا سَمِعوا","وَلَو أنَّنا","قالَ المَلأ","واعلَموا","يَعتَذِرونَ","وَما مِن دابَّة","وَما أُبَرِّئ","رُبَما","سُبحانَ الَّذي","قالَ ألَم","اقتَرَبَ","قَد أفلَحَ","وقالَ الَّذينَ","أمَّن خَلَقَ","اتلُ ما أوحِيَ","وَمَن يَقنُت","وما لِيَ","فَمَن أَظلَم","إليهِ يُرَدُّ","حم","قالَ فَما خَطبُكم","قَد سَمِعَ اللَّه","تَبارَكَ الَّذي","عَمَّ يَتَساءَلون"];
+const AR_NUM     = ["١","٢","٣","٤","٥","٦","٧","٨","٩","١٠","١١","١٢","١٣","١٤","١٥","١٦","١٧","١٨","١٩","٢٠","٢١","٢٢","٢٣","٢٤","٢٥","٢٦","٢٧","٢٨","٢٩","٣٠"];
+const ORDINALS   = ["الأولى","الثانية","الثالثة","الرابعة","الخامسة","السادسة","السابعة","الثامنة","التاسعة","العاشرة","الحادية عشرة","الثانية عشرة","الثالثة عشرة","الرابعة عشرة","الخامسة عشرة"];
+
+const makeJuz    = i  => ({number:i+1,name:JUZ_NAMES[i],status:"available",reservedBy:null,reservedAt:null,completedAt:null});
+const makeKhatma = idx => ({id:`k_${Date.now()}_${Math.random().toString(36).slice(2)}`,name:`الختمة ${ORDINALS[idx]??`رقم ${idx+1}`}`,createdAt:new Date().toISOString(),juzList:Array.from({length:30},(_,i)=>makeJuz(i))});
+const toArr      = v  => Array.isArray(v)?v:Object.values(v||{});
+const norm       = raw => raw?toArr(raw).filter(Boolean).map(k=>({...k,juzList:toArr(k.juzList)})):null;
+const getStats   = k  => {if(!k)return{av:0,rs:0,cp:0};const l=toArr(k.juzList);return{av:l.filter(j=>j.status==="available").length,rs:l.filter(j=>j.status==="reserved").length,cp:l.filter(j=>j.status==="completed").length};};
+const fmtDate    = iso => {try{return new Date(iso).toLocaleDateString("ar-EG",{year:"numeric",month:"long",day:"numeric"});}catch{return "";}};
+
+let _db = null;
+const db = () => {
+  if (_db) return _db;
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+  _db = firebase.database();
+  return _db;
+};
+
+function App() {
+  const [loading,setLoading]       = useState(true);
+  const [khatmat,setKhatmat]       = useState([]);
+  const [activeId,setActiveId]     = useState(null);
+  const [userName,setUserName]     = useState("");
+  const [search,setSearch]         = useState("");
+  const [selJuz,setSelJuz]         = useState(null);
+  const [modal,setModal]           = useState(null);
+  const [toast,setToast]           = useState(null);
+  const [adminOpen,setAdminOpen]   = useState(false);
+  const [delConfirm,setDelConfirm] = useState(null);
+
+  const showToast = useCallback((msg,type="success")=>{ setToast({msg,type}); setTimeout(()=>setToast(null),3500); },[]);
+
+  useEffect(()=>{
+    const name = localStorage.getItem("khatma_username");
+    if(name) setUserName(name);
+
+    const ref = db().ref("khatmat");
+    const handler = async snap => {
+      const raw = snap.val();
+      if(!raw){
+        const init=[makeKhatma(0)];
+        await ref.set(init);
+        setKhatmat(init); setActiveId(init[0].id); setLoading(false); return;
+      }
+      let arr = norm(raw);
+      // remove premature empty khatmat
+      let changed=false;
+      arr=arr.filter((k,i)=>{
+        if(i===0)return true;
+        const prevAvail=arr[i-1].juzList.some(j=>j.status==="available");
+        const empty=k.juzList.every(j=>j.status==="available");
+        if(empty&&prevAvail){changed=true;return false;}
+        return true;
+      });
+      if(changed){await ref.set(arr);return;}
+      setKhatmat(arr);
+      setActiveId(id=>id&&arr.find(k=>k.id===id)?id:arr[arr.length-1].id);
+      setLoading(false);
+    };
+    ref.on("value",handler);
+    return ()=>ref.off("value",handler);
+  },[]);
+
+  useEffect(()=>{ if(userName) localStorage.setItem("khatma_username",userName); },[userName]);
+
+  const ref   = ()=>db().ref("khatmat");
+  const fresh = async()=>{ const s=await ref().get(); return norm(s.val())||[makeKhatma(0)]; };
+  const write = async arr=>{ setKhatmat([...arr]); await ref().set(arr); };
+
+  const activeK  = khatmat.find(k=>k.id===activeId);
+  const stats    = getStats(activeK);
+  const cpPct    = activeK?Math.round((stats.cp/30)*100):0;
+  const rsPct    = activeK?Math.round((stats.rs/30)*100):0;
+  const allDone  = activeK?.juzList.every(j=>j.status==="completed");
+  const juzHL    = (activeK?.juzList||[]).map(j=>({...j,hl:!!search.trim()&&!!j.reservedBy?.toLowerCase().includes(search.trim().toLowerCase())}));
+  const srchHits = juzHL.filter(j=>j.hl);
+
+  const handleReserve = async()=>{
+    const name=userName.trim();
+    if(!name){showToast("يرجى إدخال اسمك أولاً ✏️","error");return;}
+    const arr=await fresh();
+    const ki=arr.findIndex(k=>k.id===activeId); if(ki===-1)return;
+    const ji=arr[ki].juzList.findIndex(j=>j.number===selJuz.number);
+    if(arr[ki].juzList[ji].status!=="available"){showToast("تم حجز هذا الجزء للتو ⚡","error");setModal(null);return;}
+    arr[ki].juzList[ji]={...arr[ki].juzList[ji],status:"reserved",reservedBy:name,reservedAt:new Date().toISOString()};
+    const allRes=arr[ki].juzList.every(j=>j.status!=="available");
+    if(allRes&&ki===arr.length-1){arr.push(makeKhatma(arr.length));showToast("🎉 اكتمل الحجز! تم فتح ختمة جديدة","gold");}
+    else showToast(`✓ تم حجز الجزء ${selJuz.number} باسم ${name}`);
+    setModal(null); await write(arr);
+  };
+  const handleComplete = async()=>{
+    const arr=await fresh(); const ki=arr.findIndex(k=>k.id===activeId);
+    const ji=arr[ki].juzList.findIndex(j=>j.number===selJuz.number);
+    arr[ki].juzList[ji]={...arr[ki].juzList[ji],status:"completed",completedAt:new Date().toISOString()};
+    setModal(null); showToast("🌟 بارك الله فيك! تم تسجيل إتمام الجزء","gold"); await write(arr);
+  };
+  const handleCancel = async()=>{
+    const arr=await fresh(); const ki=arr.findIndex(k=>k.id===activeId);
+    const ji=arr[ki].juzList.findIndex(j=>j.number===selJuz.number);
+    arr[ki].juzList[ji]=makeJuz(selJuz.number-1);
+    setModal(null); showToast("تم إلغاء الحجز"); await write(arr);
+  };
+  const addKhatma = async()=>{
+    const arr=await fresh();
+    if(arr[arr.length-1]?.juzList.some(j=>j.status==="available")){showToast("لا يمكن فتح ختمة جديدة قبل اكتمال الحجز 🔒","error");return;}
+    const nk=makeKhatma(arr.length); arr.push(nk); setActiveId(nk.id);
+    showToast("تم إنشاء ختمة جديدة 🌿"); await write(arr);
+  };
+  const adminReset = async kid=>{
+    const arr=await fresh(); const ki=arr.findIndex(k=>k.id===kid);
+    arr[ki].juzList=Array.from({length:30},(_,i)=>makeJuz(i));
+    showToast("تمت إعادة التعيين"); await write(arr);
+  };
+  const adminDelete = async kid=>{
+    let arr=await fresh(); arr=arr.filter(k=>k.id!==kid);
+    if(!arr.length)arr=[makeKhatma(0)];
+    setDelConfirm(null); if(activeId===kid)setActiveId(arr[0].id);
+    showToast("تم الحذف"); await write(arr);
+  };
+
+  if(loading) return (
+    <div className="loading">
+      <div className="spinner"/>
+      <div>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+      <div style={{fontSize:"1rem",color:"var(--txt3)"}}>جاري التحميل...</div>
+    </div>
+  );
+
+  return (
+    <div className="app-wrap" dir="rtl">
+      <header className="header">
+        <div className="header-geo"/>
+        <div className="header-inner">
+          <div className="header-basmala">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+          <h1 className="header-title">ختمات القرآن الكريم</h1>
+          <p className="header-sub">احجز جزءك وشارك في إتمام كتاب الله</p>
+          <div className="header-ornament">❧ ✦ ✦ ✦ ❧</div>
+        </div>
+        <div className="gold-bar"/>
+      </header>
+
+      <div className="tab-bar">
+        <div className="tab-inner">
+          {khatmat.map(k=>{
+            const s=getStats(k);const done=s.cp===30;const full=s.av===0&&!done;
+            return <button key={k.id} className={`tab-btn${k.id===activeId?" active":""}${done?" done":""}`} onClick={()=>setActiveId(k.id)}>{done?"✅ ":full?"🔒 ":""}{k.name}</button>;
+          })}
+          <button className="tab-add" onClick={addKhatma}><span style={{fontSize:"1.1rem",lineHeight:1}}>+</span> ختمة جديدة</button>
+          <button className="tab-admin" onClick={()=>setAdminOpen(v=>!v)}>⚙️ الإدارة</button>
+        </div>
+      </div>
+
+      <main className="main">
+        {activeK && (<>
+          <div className="khatma-card">
+            <div className="khatma-title"><span>📖</span> {activeK.name}</div>
+            <div className="khatma-meta">أُنشئت في {fmtDate(activeK.createdAt)}</div>
+            {allDone&&<div className="complete-banner"><h3>🌟 تبارك الله — اكتمل ختم القرآن الكريم 🌟</h3><p>جزى الله المشاركين خير الجزاء</p></div>}
+            <div className="prog-header">
+              <span className="prog-lbl">📊 تقدم الختمة</span>
+              <span className="prog-pct">{cpPct}٪ مكتمل</span>
+            </div>
+            <div className="prog-track">
+              <div className="prog-fill-rs" style={{width:`${rsPct+cpPct}%`}}/>
+              <div className="prog-fill-cp" style={{width:`${cpPct}%`}}/>
+            </div>
+            <div className="prog-stats">
+              <span className="prog-stat"><span className="dot av"/>متاح: {stats.av}</span>
+              <span className="prog-stat"><span className="dot rs"/>محجوز: {stats.rs}</span>
+              <span className="prog-stat"><span className="dot cp"/>مكتمل: {stats.cp}</span>
+            </div>
+          </div>
+
+          <div className="controls">
+            <div className="inp-wrap">
+              <span className="inp-icon">👤</span>
+              <input className="inp" placeholder="أدخل اسمك للحجز..." value={userName} onChange={e=>setUserName(e.target.value)} dir="rtl"/>
+            </div>
+            <div className="inp-wrap">
+              <span className="inp-icon">🔍</span>
+              <input className="inp" placeholder="ابحث باسم الشخص..." value={search} onChange={e=>setSearch(e.target.value)} dir="rtl"/>
+            </div>
+          </div>
+
+          {search.trim()&&(
+            <div className="srch-result">
+              {srchHits.length
+                ? <>{<span>نتائج «<strong>{search}</strong>»:</span>}{srchHits.map(j=><span key={j.number} className="srch-badge">الجزء {j.number}</span>)}</>
+                : <span className="srch-none">لم يُعثر على «{search}»</span>}
+            </div>
+          )}
+
+          <div className="juz-grid">
+            {juzHL.map(juz=>(
+              <div key={juz.number} className={`juz-card ${juz.status}${juz.hl?" hl":""}`}
+                onClick={()=>{setSelJuz(juz);setModal(juz.status==="available"?"reserve":"manage");}}>
+                <div className="juz-badge">{AR_NUM[juz.number-1]}</div>
+                <div className="juz-num-lbl">الجزء {juz.number}</div>
+                {juz.status==="available"&&<div className="juz-status">🟢 متاح</div>}
+                {juz.status==="reserved"&&<><div className="juz-by">{juz.reservedBy}</div><div className="juz-status">📌 محجوز</div></>}
+                {juz.status==="completed"&&<><div className="juz-by">{juz.reservedBy}</div><div className="juz-status">✅ مكتمل</div></>}
+              </div>
+            ))}
+          </div>
+        </>)}
+
+        {adminOpen&&(
+          <div className="admin-panel">
+            <div className="admin-head">
+              <div className="admin-title">⚙️ لوحة الإدارة</div>
+              <button className="btn btn-outline btn-sm" onClick={()=>setAdminOpen(false)}>إغلاق ✕</button>
+            </div>
+            {khatmat.map(k=>{
+              const s=getStats(k);const rP=Math.round(((s.rs+s.cp)/30)*100);const cP=Math.round((s.cp/30)*100);
+              return(
+                <div key={k.id} className="admin-row" style={k.id===activeId?{background:"var(--g6)"}:{}}>
+                  <div className="admin-row-head">
+                    <div className="admin-row-name">{k.name}</div>
+                    <div className="admin-actions">
+                      <button className="btn btn-outline btn-sm" onClick={()=>adminReset(k.id)}>🔄 إعادة تعيين</button>
+                      {delConfirm===k.id
+                        ?<><span style={{fontSize:".82rem",color:"var(--red)"}}>تأكيد؟</span><button className="btn btn-ghost btn-sm" onClick={()=>adminDelete(k.id)}>نعم احذف</button><button className="btn btn-outline btn-sm" onClick={()=>setDelConfirm(null)}>إلغاء</button></>
+                        :<button className="btn btn-ghost btn-sm" onClick={()=>setDelConfirm(k.id)}>🗑 حذف</button>}
+                    </div>
+                  </div>
+                  <div className="admin-row-meta">متاح: {s.av} · محجوز: {s.rs} · مكتمل: {s.cp} · الحجز: {rP}%</div>
+                  <div className="prog-track" style={{height:"8px"}}>
+                    <div className="prog-fill-rs" style={{width:`${rP}%`}}/>
+                    <div className="prog-fill-cp" style={{width:`${cP}%`}}/>
+                  </div>
+                  {k.juzList.some(j=>j.status!=="available")&&(
+                    <table className="tbl">
+                      <thead><tr><th>الجزء</th><th>الاسم</th><th>الحالة</th><th>التاريخ</th></tr></thead>
+                      <tbody>
+                        {k.juzList.filter(j=>j.status!=="available").map(j=>(
+                          <tr key={j.number}>
+                            <td style={{fontFamily:"'Amiri',serif",fontWeight:600}}>الجزء {j.number}</td>
+                            <td>{j.reservedBy||"—"}</td>
+                            <td><span className={`badge ${j.status==="reserved"?"rs":"cp"}`}>{j.status==="reserved"?"📌 محجوز":"✅ مكتمل"}</span></td>
+                            <td style={{fontSize:".77rem",color:"var(--txt3)"}}>{fmtDate(j.reservedAt)||"—"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <div className="footer">
+          <div className="footer-orn">❧ ✦ ✦ ✦ ❧</div>
+          <p>اللهم اجعل القرآن ربيع قلوبنا ونور صدورنا وجلاء أحزاننا وذهاب همومنا</p>
+        </div>
+      </main>
+
+      {modal==="reserve"&&selJuz&&(
+        <div className="overlay" onClick={()=>setModal(null)}>
+          <div className="modal" onClick={e=>e.stopPropagation()}>
+            <span className="modal-ico">📖</span>
+            <div className="modal-title">حجز الجزء {selJuz.number}</div>
+            <div className="modal-sub">أدخل اسمك الكريم لتثبيت حجزك</div>
+            <input className="modal-inp" placeholder="اسمك الكريم..." value={userName}
+              onChange={e=>setUserName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleReserve()} autoFocus/>
+            <div className="modal-actions">
+              <button className="btn btn-primary" onClick={handleReserve} disabled={!userName.trim()}>✓ تأكيد الحجز</button>
+              <button className="btn btn-outline" onClick={()=>setModal(null)}>إلغاء</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {modal==="manage"&&selJuz&&(
+        <div className="overlay" onClick={()=>setModal(null)}>
+          <div className="modal" onClick={e=>e.stopPropagation()}>
+            <span className="modal-ico">{selJuz.status==="completed"?"✅":"📌"}</span>
+            <div className="modal-title">الجزء {selJuz.number}</div>
+            <div className="modal-info">
+              <div className="modal-info-lbl">{selJuz.status==="completed"?"أتمّ هذا الجزء":"تم الحجز بواسطة"}</div>
+              <div className="modal-info-name">{selJuz.reservedBy}</div>
+              {selJuz.reservedAt&&<div className="modal-info-date">بتاريخ {fmtDate(selJuz.reservedAt)}</div>}
+            </div>
+            <div className="modal-actions">
+              {selJuz.status==="reserved"&&<><button className="btn btn-gold" onClick={handleComplete}>✅ تم الانتهاء</button><button className="btn btn-ghost" onClick={handleCancel}>🗑 إلغاء الحجز</button></>}
+              {selJuz.status==="completed"&&<button className="btn btn-ghost" onClick={handleCancel}>↩️ إعادة للحجز</button>}
+              <button className="btn btn-outline" onClick={()=>setModal(null)}>إغلاق</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toast&&<div className={`toast ${toast.type}`}>{toast.msg}</div>}
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
